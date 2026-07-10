@@ -1,403 +1,588 @@
-<html class="ng-scope" data-ng-app="myApp" xmlns:ng="http://angularjs.org">
- <head>
-  <style type="text/css">
-   @charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}
-  </style>
-  <meta content="IE=edge,chrome=1" http-equiv="X-UA-Compatible"/>
-  <meta content="telephone=no" name="format-detection"/>
-  <title class="ng-binding" data-ng-bind="'IHJ — ' + title">
-   IHJ — Commercial Debt Management - Recovery professionals based in Glasgow and Edinburgh
-  </title>
-  <meta content="Start Your Debt Recovery Today. Best Commission Rates Offered. 30 years experience. Delivering outstanding results and maximising customer cashflow." name="description"/>
-  <meta charset="utf-8"/>
-  <meta content="width=device-width, initial-scale=1" name="viewport"/>
-  <link href="css/style.css" rel="stylesheet" type="text/css"/>
-  <link href="images/icon.svg" rel="shortcut icon"/>
-  <meta content="IHJ — Commercial Debt Management - Recovery professionals based in Glasgow and Edinburgh" property="og:title"/>
-  <meta content="website" property="og:type"/>
-  <meta content="Start Your Debt Recovery Today. Best Commission Rates Offered. 30 years experience. Delivering outstanding results and maximising customer cashflow." property="og:description"/>
-  <meta content="http://www.ihjcollection.co.uk/#/" property="og:url"/>
-  <meta content="http://www.ihjcollection.co.uk/images/logoandnameonly.svg" property="og:image"/>
-  <link href="https://www.ihjcollection.co.uk/#/" ng-href="https://www.ihjcollection.co.uk/#/" rel="canonical"/>
-  <!-- Google tag (gtag.js) -->
-  <script async="" src="js/js">
-  </script>
-  <script>
-   window.dataLayer = window.dataLayer || [];
-  		function gtag(){dataLayer.push(arguments);}
-  		gtag('js', new Date());
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DNSWatch</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
-  		gtag('config', 'G-QJK59LQXXR');
-  </script>
- </head>
- <body class="ng-scope" data-ng-controller="MyCtrl" id="ng-app">
-  <div class="outline">
+  :root{
+    --bg:#0a0e0f;
+    --panel:#10171a;
+    --panel-2:#0d1316;
+    --line:#1d2a2e;
+    --ink:#d8e6e3;
+    --muted:#5d7470;
+    --green:#3ee6a0;
+    --amber:#ffb347;
+    --red:#ff5d5d;
+    --cyan:#46d6e0;
+    --grid:#16211f;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    line-height:1.5;
+    background-image:
+      radial-gradient(circle at 15% -10%, rgba(62,230,160,.06), transparent 40%),
+      radial-gradient(circle at 90% 10%, rgba(70,214,224,.05), transparent 45%);
+    min-height:100vh;
+  }
+  .wrap{width:75%;max-width:1800px;min-width:0;margin:0 auto;padding:24px 20px 60px}
+  @media(max-width:1100px){.wrap{width:94%}}
+  header{
+    display:flex;align-items:baseline;justify-content:space-between;
+    border-bottom:1px solid var(--line);padding-bottom:14px;margin-bottom:22px;
+    flex-wrap:wrap;gap:10px;
+  }
+  h1{
+    font-family:'Space Mono',monospace;font-weight:700;font-size:22px;
+    letter-spacing:-.5px;color:var(--ink);
+  }
+  h1 .dot{color:var(--green)}
+  .status{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted)}
+  .pulse{width:8px;height:8px;border-radius:50%;background:var(--green);
+    box-shadow:0 0 0 0 rgba(62,230,160,.6);animation:pulse 2s infinite}
+  .pulse.bad{background:var(--red);animation:none;box-shadow:0 0 8px var(--red)}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(62,230,160,.5)}70%{box-shadow:0 0 0 7px rgba(62,230,160,0)}100%{box-shadow:0 0 0 0 rgba(62,230,160,0)}}
+
+  .grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:16px}
+  .stat .k{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+  .stat .v{font-family:'Space Mono';font-size:28px;font-weight:700;margin-top:4px}
+  .stat.flag .v{color:var(--amber)}
+  .stat.block .v{color:var(--cyan)}
+  .stat.q .v{color:var(--ink)}
+  .stat.rate .v{color:var(--green)}
+
+  .row{display:grid;grid-template-columns:2fr 1fr;gap:14px;margin-bottom:18px}
+  /* bottom area: events table (wide) beside whitelist sidebar (narrow) */
+  .botgrid{display:grid;grid-template-columns:3fr 1fr;gap:14px;align-items:start;margin-bottom:18px}
+  .wl-side{position:sticky;top:18px}
+  .wl-side .wlbox{flex-direction:column;align-items:stretch}
+  .wl-side .chip{justify-content:space-between}
+  @media(max-width:1100px){.botgrid{grid-template-columns:1fr}.wl-side{position:static}.wl-side .wlbox{flex-direction:row}}
+  @media(max-width:840px){.grid{grid-template-columns:repeat(2,1fr)}.row{grid-template-columns:1fr}}
+
+  .card h2{font-size:11px;text-transform:uppercase;letter-spacing:1.5px;color:var(--muted);
+    margin-bottom:14px;font-weight:600}
+  svg{width:100%;display:block;overflow:visible}
+  .chartwrap{position:relative}
+  .charttip{position:absolute;pointer-events:none;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:6px;padding:8px 10px;font-size:11px;
+    color:var(--ink);display:none;z-index:5;white-space:nowrap;box-shadow:0 4px 14px rgba(0,0,0,.45)}
+  .charttip .tt-time{color:var(--muted);margin-bottom:5px;font-size:10px;letter-spacing:.5px}
+  .charttip .tt-row{display:flex;align-items:center;gap:7px;margin-top:3px}
+  .charttip .tt-row i{width:9px;height:3px;display:inline-block;border-radius:1px;flex:none}
+  .charttip .tt-row b{margin-left:auto;font-weight:600;padding-left:16px;font-family:'Space Mono',monospace}
+  .ax-label{fill:var(--muted);font-size:9px;font-family:'IBM Plex Mono',monospace}
+  .legend{display:flex;gap:16px;font-size:11px;color:var(--muted);margin-top:10px}
+  .legend i{display:inline-block;width:10px;height:3px;vertical-align:middle;margin-right:5px}
+
+  .bars div{display:flex;align-items:center;gap:10px;margin-bottom:9px;font-size:12px}
+  .bars .lbl{width:90px;color:var(--muted);text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bars .track{flex:1;height:14px;background:var(--panel-2);border:1px solid var(--line);border-radius:3px;overflow:hidden}
+  .bars .fill{height:100%;background:linear-gradient(90deg,var(--cyan),var(--green))}
+  .bars .num{width:32px;color:var(--ink);font-weight:600}
+
+  table{width:100%;border-collapse:collapse;font-size:12px}
+  th{text-align:left;color:var(--muted);font-weight:500;text-transform:uppercase;
+    font-size:10px;letter-spacing:1px;padding:8px 10px;border-bottom:1px solid var(--line)}
+  td{padding:9px 10px;border-bottom:1px solid var(--grid);vertical-align:middle}
+  tr:hover td{background:rgba(70,214,224,.03)}
+  .tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:10px;font-weight:600;
+    letter-spacing:.5px;text-transform:uppercase}
+  .tag.HIGH_ENTROPY{background:rgba(255,93,93,.14);color:var(--red);border:1px solid rgba(255,93,93,.3)}
+  .tag.NXDOMAIN_SPIKE{background:rgba(255,179,71,.14);color:var(--amber);border:1px solid rgba(255,179,71,.3)}
+  .tag.BURST{background:rgba(70,214,224,.14);color:var(--cyan);border:1px solid rgba(70,214,224,.3)}
+  .tag.NEW_DOMAIN{background:rgba(62,230,160,.12);color:var(--green);border:1px solid rgba(62,230,160,.3)}
+  .dom{color:var(--ink);word-break:break-all}
+  .cli{color:var(--muted)}
+  .det{color:var(--muted);font-size:11px}
+  .ago{color:var(--muted);font-size:11px;white-space:nowrap}
+  .blockbtn{background:transparent;border:1px solid var(--red);color:var(--red);
+    font-family:inherit;font-size:10px;padding:4px 9px;border-radius:4px;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.5px;transition:.15s}
+  .blockbtn:hover{background:var(--red);color:var(--bg)}
+  .blockbtn:disabled{opacity:.4;cursor:default;border-color:var(--muted);color:var(--muted)}
+  .actions{white-space:nowrap;text-align:right}
+  .actions .btnrow{display:inline-flex;gap:6px;vertical-align:middle}
+  .okbtn{background:transparent;border:1px solid var(--green);color:var(--green);
+    font-family:inherit;font-size:10px;padding:4px 9px;border-radius:4px;cursor:pointer;
+    text-transform:uppercase;letter-spacing:.5px;transition:.15s}
+  .okbtn:hover{background:var(--green);color:var(--bg)}
+  .okbtn:disabled{opacity:.5;cursor:default}
+  /* engaged state: a currently-blocked / currently-trusted toggle reads as filled */
+  .blockbtn.active{background:var(--red);color:var(--bg)}
+  .blockbtn.active:hover{background:transparent;color:var(--red)}
+  .okbtn.active{background:#5cb3ff;border-color:#5cb3ff;color:var(--bg)}
+  .okbtn.active:hover{background:transparent;color:#5cb3ff}
+  .wlbox{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+  .chip{display:inline-flex;align-items:center;gap:6px;background:var(--panel-2);
+    border:1px solid var(--line);border-radius:14px;padding:4px 10px;font-size:11px;color:var(--ink)}
+  .chip i{color:var(--muted);font-style:normal;font-size:10px}
+  .chip b{color:var(--red);cursor:pointer;font-weight:700;font-size:13px;line-height:1}
+  .chip b:hover{color:#fff}
+  .pager{display:flex;align-items:center;justify-content:center;gap:16px;margin-top:16px}
+  .pgbtn{background:transparent;border:1px solid var(--line);color:var(--ink);
+    font-family:inherit;font-size:12px;padding:6px 14px;border-radius:6px;cursor:pointer;transition:.15s}
+  .pgbtn:hover:not(:disabled){border-color:var(--cyan);color:var(--cyan)}
+  .pgbtn:disabled{opacity:.35;cursor:default}
+  .pginfo{color:var(--muted);font-size:11px;letter-spacing:.5px}
+  .trusted{display:inline-block;padding:4px 11px;border-radius:4px;font-size:10px;font-weight:600;
+    letter-spacing:.5px;text-transform:uppercase;background:rgba(70,180,255,.14);
+    color:#5cb3ff;border:1px solid rgba(70,180,255,.35)}
+  .trustedrow td{opacity:.78}
+  .trustedrow td.actions{opacity:1}
+  .empty{color:var(--muted);text-align:center;padding:30px;font-style:italic}
+  .errbar{background:rgba(255,93,93,.1);border:1px solid rgba(255,93,93,.3);color:var(--red);
+    padding:10px 14px;border-radius:8px;margin-bottom:18px;font-size:12px;display:none}
+
+  /* Form style inputs */
+  .card-header-flex { display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; flex-wrap:wrap; gap:10px; }
+  .manual-input { background:var(--panel-2); border:1px solid var(--line); color:var(--ink); font-family:inherit; font-size:11px; padding:4px 8px; border-radius:4px; width:180px; }
+  .manual-input:focus { border-color:var(--green); outline:none; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>DNS<span class="dot">·</span>WATCH</h1>
+    <button class="pgbtn" id="restart-btn" style="padding:4px 10px; margin-left:15px; border-color:var(--line);">Restart Backend</button>
+    <div class="status"><span class="pulse" id="pulse"></span><span id="statustxt">connecting…</span></div>
+  </header>
+
+  <div class="errbar" id="errbar"></div>
+
+  <div class="grid">
+    <div class="card stat q"><div class="k">Queries seen</div><div class="v" id="s-q">—</div></div>
+    <div class="card stat block"><div class="k">Blocked (AdGuard)</div><div class="v" id="s-b">—</div></div>
+    <div class="card stat flag"><div class="k">Flagged sus</div><div class="v" id="s-f">—</div></div>
+    <div class="card stat rate"><div class="k">Block rate</div><div class="v" id="s-r">—</div></div>
   </div>
-  <input class="navtoggle" id="toggle" type="checkbox"/>
-  <label class="navmenu" for="toggle">
-   <span class="off">
-   </span>
-   <span class="on">
-   </span>
-  </label>
-  <nav>
-   <object data="images/icon.svg" ng-click=" go(''); gotoTop()" style="cursor: pointer;" type="image/svg+xml">
-   </object>
-   <a class="active" href="#/" ng-class="{active:isActive('/')}">
-    Home
-   </a>
-   <!--<a  ng-class="{active:isActive('/about-us')}" href="#/about-us">About Us</a>-->
-   <a href="#/our-services" ng-class="{active:isActive('/our-services')}">
-    Services
-   </a>
-   <a href="#/late-payment-legislation" ng-class="{active:isActive('/late-payment-legislation')}">
-    Late Payment Legislation
-   </a>
-   <!--<a  ng-class="{active:isActive('/iresolve-legal')}" href="#/iresolve-legal">iResolve</a>-->
-   <!--		<a  href="https://www.iresolve-legal.co.uk/" target="_blank">iResolve-Legal</a>-->
-   <a href="#/contact-us" ng-class="{active:isActive('/contact-us')}">
-    Contact Us
-   </a>
-  </nav>
-  <div class="down-pointer" id="dwnPoi" style="bottom: -15rem; opacity: 0;">
-   <span>
-    ▼
-   </span>
+
+  <div class="row">
+    <div class="card">
+      <h2>Traffic timeline — queries · blocked · flagged</h2>
+      <div class="chartwrap">
+        <svg id="chart" viewBox="0 0 720 270"></svg>
+        <div class="charttip" id="chart-tip"></div>
+      </div>
+      <div class="legend">
+        <span><i style="background:var(--ink)"></i>queries</span>
+        <span><i style="background:var(--cyan)"></i>blocked</span>
+        <span><i style="background:var(--amber)"></i>flagged</span>
+      </div>
+    </div>
+    <div class="card">
+      <h2>Top flagged clients</h2>
+      <div class="bars" id="bars"><div class="empty">no flags yet</div></div>
+    </div>
   </div>
-  <noscript>
-   We're sorry, but this website requires javascript to run. Please visit your browser settings to enable it or trying using a recently updated browser.
-  </noscript>
-  <!-- ngView:  -->
-  <main class="ng-scope" data-ng-view="" id="top" style="">
-   <meta charset="utf-8" class="ng-scope"/>
-   <section class="split-window ng-scope">
-    <div class="full-height no-top-padding">
-     <object data="images/logo.svg" type="image/svg+xml">
-      <img src="images/img.jpeg"/>
-     </object>
+
+  <div class="botgrid">
+    <div class="card">
+      <div class="card-header-flex">
+        <h2 style="margin-bottom:0">Suspicious events</h2>
+        <button class="blockbtn" id="clear-events-btn" style="padding:4px 10px;">Clear All Logs</button>
+      </div>
+      <table>
+        <thead><tr><th>When</th><th>Type</th><th>Domain</th><th>Client</th><th>Why</th><th></th></tr></thead>
+        <tbody id="events"><tr><td colspan="6" class="empty">watching…</td></tr></tbody>
+      </table>
+      <div class="pager" id="pager"></div>
     </div>
-    <div class="introCTA full-height ng-scope" ng-controller="formCtrl">
-     <!--<h1>No Recovery, No Fee Options Available</h1>-->
-     <h1>
-      Commercial Debt Management &amp; Credit Control Services
-     </h1>
-     <h2>
-      Best Commission Rates Offered
-     </h2>
-     <h3>
-      Call Today
-     </h3>
-     <h5>
-      0131 555 0785
-     </h5>
-     <form class="ng-pristine ng-invalid ng-invalid-required ng-valid-email" name="userForm" ng-submit="submitForm(userForm.$valid)">
-      <input class="ng-pristine ng-untouched ng-invalid ng-invalid-required" min="2" name="name" ng-model="name" placeholder="Your Full Name*" required="" type="text"/>
-      <br/>
-      <input class="ng-pristine ng-untouched ng-valid" min="2" name="org" ng-model="org" placeholder="Your Organisation" type="text"/>
-      <br/>
-      <input class="ng-pristine ng-untouched ng-valid-email ng-invalid ng-invalid-required" min="2" name="email" ng-model="email" placeholder="Your Email*" required="" type="email"/>
-      <br/>
-      <input class="ng-pristine ng-untouched ng-valid" min="9" name="phone" ng-model="phone" placeholder="Your Telephone" type="text"/>
-      <br/>
-      <textarea class="ng-pristine ng-untouched ng-invalid ng-invalid-required" name="query" ng-model="query" placeholder="How can we help you?" required=""></textarea>
-      <br/>
-      <input class="button ng-pristine ng-untouched ng-valid" disabled="disabled" id="submitbutton" ng-disabled="userForm.$invalid" ng-model="submitButts" tabindex="-1" type="submit" value="Submit Details"/>
-      <!--onsubmit="ga('send', 'event', 'Contact','Submitted','AllForm','100');"-->
-     </form>
+
+    <div class="card wl-side">
+      <h2>Whitelist — marked safe</h2>
+      <div style="display:flex; gap:6px; margin-bottom:12px;">
+        <input type="text" id="wl-input" placeholder="e.g. gemini.google.com" class="manual-input" style="flex:1; width:auto;">
+        <button class="okbtn" id="wl-add-btn" style="padding:4px 10px;">Add</button>
+      </div>
+      <div class="wlbox" id="wl"><span class="empty" style="padding:0">loading…</span></div>
     </div>
-   </section>
-   <section class="split-window ng-scope" id="sectionNoOb">
-    <div class="blue-bkrgnd full-height">
-     <!--<h2>Commercial Debt Management &amp; Credit Control Services</h2>-->
-     <h2>
-      Is Your Business Owed Money?
-      <br/>
-      <br/>
-      If you're struggling to recover cash, we can help!
-     </h2>
-     <h3>
-      Experience Matters — Over 30 years assisting businesses collect overdue debt.
-     </h3>
-     <ul>
-      <li>
-       Full Commercial Debt Management Service
-      </li>
-      <li>
-       No contract to sign
-      </li>
-      <li>
-       Cases actioned same day
-      </li>
-      <li>
-       Dedicated client relationship manager
-      </li>
-      <li>
-       Market Leading fees
-      </li>
-      <li>
-       Proactive service – telephony, email and letter
-      </li>
-      <li>
-       Seamless process to litigation
-      </li>
-      <li>
-       Late Payment Collections
-      </li>
-     </ul>
-    </div>
-    <div class="full-height">
-     <div class="est">
-      <h5>
-       Est.
-      </h5>
-      <h4>
-       1986
-      </h4>
-     </div>
-     <h3>
-      Best of Both Worlds Guarantee
-     </h3>
-     <h4>
-      A seamless, low cost process carefully managed from pre-sue to litigation with our partner firms. Bringing true Transparency and Cost Management if and when litigation is required.
-     </h4>
-     <h3 class="full-flex">
-      Call For a
-      <span class="running" id="spanNoOb">
-       No Obligation
-      </span>
-      Discussion:
-     </h3>
-     <div class="contact-field">
-      <img src="images/icon-staff.svg"/>
-      <h6>
-       0131 555 0785
-      </h6>
-     </div>
-     <div class="contact-field">
-      <img src="images/icon-email.svg"/>
-      <h6>
-       <a href="mailto:info@ihjcollection.co.uk">
-        info@ihjcollection.co.uk
-       </a>
-      </h6>
-     </div>
-    </div>
-   </section>
-   <section class="why ng-scope">
-    <h2>
-     Why Work With Us?
-    </h2>
-    <div class="industry-service">
-     <object data="images/icon-xp.svg" type="image/svg+xml">
-     </object>
-     <div class="text-cont">
-      <h3>
-       30 Years Experience
-      </h3>
-      <p>
-       We are a specialist business to business collections company with over 30 years experience. We utilise all this experience to exceed customer expectations and offer a seamless service from pre-sue to litigation.
-      </p>
-     </div>
-    </div>
-    <div class="industry-service">
-     <object data="images/icon-management.svg" type="image/svg+xml">
-     </object>
-     <div class="text-cont">
-      <h3>
-       Management Expertise
-      </h3>
-      <p>
-       We offer dedicated arrears management, tracing, recovery and litigation services across the UK. We have a wide network of expertise and strong relationships with tracing agents, insolvency practitioners and sheriff officers.
-      </p>
-     </div>
-    </div>
-    <div class="industry-service">
-     <object data="images/icon-money.svg" type="image/svg+xml">
-     </object>
-     <div class="text-cont">
-      <h3>
-       Millions of Pounds Recovered
-      </h3>
-      <p>
-       No debt is too small. Our costs are often covered by Late Payment collection. Our aim is to deliver outstanding results and maximise customer cashflow.
-      </p>
-     </div>
-    </div>
-    <!--<div class="industry-service">
-			<object type="image/svg+xml" data="images/icon-nofee.svg"></object>
-			<div class="text-cont">
-            	<h3>No Recovery, No Fee Available</h3>
-            	<p>Our service can be provided on a No Recovery No Fee basis or fixed fee. Fees as low as 4% and we will not be beaten on price.</p>
-			</div>
-		</div>-->
-    <div class="industry-service">
-     <object data="images/icon-parters.svg" type="image/svg+xml">
-     </object>
-     <div class="text-cont">
-      <h3>
-       Seamless Partnerships
-      </h3>
-      <p>
-       We also offer low cost litigation services, through our partner company.
-      </p>
-     </div>
-    </div>
-    <div class="industry-service">
-     <object data="images/icon-staff.svg" type="image/svg+xml">
-     </object>
-     <div class="text-cont">
-      <h3>
-       Expert Staff
-      </h3>
-      <p>
-       We employ and train the best people to understand different businesses require different approaches. Our diverse client base, across a range of sectors, all demand results and a positive customer experience.
-      </p>
-     </div>
-    </div>
-   </section>
-   <section class="split-window about ng-scope">
+  </div>
+</div>
+
+<script>
+const $ = s => document.querySelector(s);
+
+function ago(iso){
+  const d = (Date.now() - new Date(iso).getTime())/1000;
+  if(d<60) return Math.floor(d)+'s';
+  if(d<3600) return Math.floor(d/60)+'m';
+  if(d<86400) return Math.floor(d/3600)+'h';
+  return Math.floor(d/86400)+'d';
+}
+
+async function jget(u){const r=await fetch(u);return r.json();}
+
+async function loadStatus(){
+  try{
+    const s = await jget('/api/status');
+    const ok = (s.status||'').startsWith('ok');
+    $('#pulse').className = 'pulse' + (ok?'':' bad');
+    $('#statustxt').textContent = ok
+      ? ('live · ' + (s.last_poll?('last poll '+ago(s.last_poll)+' ago'):'') )
+      : s.status;
+    const eb = $('#errbar');
+    if(!ok && s.status){ eb.style.display='block'; eb.textContent = s.status; }
+    else eb.style.display='none';
+  }catch(e){
+    $('#pulse').className='pulse bad';
+    $('#statustxt').textContent='backend unreachable';
+  }
+}
+
+async function loadSummary(){
+  const s = await jget('/api/summary');
+  const q = s.totals.q||0, b = s.totals.b||0, f = s.totals.f||0;
+  $('#s-q').textContent = q.toLocaleString();
+  $('#s-b').textContent = b.toLocaleString();
+  $('#s-f').textContent = f.toLocaleString();
+  $('#s-r').textContent = q? Math.round(b/q*100)+'%' : '0%';
+
+  const bars = $('#bars');
+  if(!s.by_client.length){ bars.innerHTML='<div class="empty">no flags yet</div>'; return; }
+  const max = Math.max(...s.by_client.map(c=>c.n));
+  bars.innerHTML = s.by_client.map(c=>`
     <div>
-     <h1>
-      About Us
-     </h1>
-     <p>
-      IHJ Collection was established in Scotland’s capital back in 1986. Since then, we have been providing dependable debt collection services to private and commercial clients across the UK. We are proud of the fact that our rates are among the most affordable in the industry. Call our support team now on 0131 555 0785 to discuss our competitive fees.
-     </p>
-    </div>
-    <div>
-     <img src="images/AdobeStock_100087539.jpeg" style="object-position: left;"/>
-    </div>
-   </section>
-   <section class="benefits ng-scope">
-    <div class="benefit">
-     <img src="images/AdobeStock_80765235.jpeg" style="object-position: center;"/>
-     <div class="floating-text">
-      <h3>
-       Cost Effective
-      </h3>
-      <p>
-       Low commission rates, subject to debt value.
-      </p>
-     </div>
-    </div>
-    <div class="benefit">
-     <img src="images/AdobeStock_99588132.jpeg" style="object-position: center;"/>
-     <div class="floating-text">
-      <h3>
-       Focused
-      </h3>
-      <p>
-       We take care of everything from start to finish, allowing you to focus on running your business.
-      </p>
-     </div>
-    </div>
-    <div class="benefit">
-     <img src="images/AdobeStock_57928724.jpeg"/>
-     <div class="floating-text">
-      <h3>
-       Cash Flow
-      </h3>
-      <p>
-       With our stellar retrieval rate, you can rest assured that you'll pocket the money you've earned.
-      </p>
-     </div>
-    </div>
-   </section>
-  </main>
-  <footer class="blue-bkrgnd ng-scope" ng-controller="formCtrl" style="padding-bottom: 8rem;">
-   <div class="divider">
-   </div>
-   <ul class="footer-links">
-    <li>
-     <a class="active" href="#/" ng-class="{active:isActive('/')}" ng-click="gotoTop()">
-      Home
-     </a>
-    </li>
-    <!--<li><a ng-click="gotoTop()" ng-class="{active:isActive('/about-us')}" href="#/about-us">About Us</a></li>-->
-    <li>
-     <a href="#/our-services" ng-class="{active:isActive('/our-services')}" ng-click="gotoTop()">
-      Services
-     </a>
-    </li>
-    <li>
-     <a href="#/late-payment-legislation" ng-class="{active:isActive('/late-payment-legislation')}" ng-click="gotoTop()">
-      Late Payment Legislation
-     </a>
-    </li>
-    <li>
-     <a href="#/iresolve-legal" ng-class="{active:isActive('/iresolve-legal')}">
-      iResolve
-     </a>
-    </li>
-    <li>
-     <a href="#/contact-us" ng-class="{active:isActive('/contact-us')}" ng-click="gotoTop()">
-      Contact Us
-     </a>
-    </li>
-   </ul>
-   <p>
-    Contact IHJ Collection at
-    <a href="mailto:info@ihjcollection.co.uk">
-     info@ihjcollection.co.uk
-    </a>
-    for independent debt collection from recovery professionals. Alternatively contact our support team on 0131 555 0785 to discuss your requirements.
-   </p>
-   <form class="ng-pristine ng-invalid ng-invalid-required ng-valid-email" name="userForm" ng-submit="submitForm(userForm.$valid)">
-    <input class="ng-pristine ng-untouched ng-invalid ng-invalid-required" min="2" name="name" ng-model="name" placeholder="Your Full Name*" required="" type="text"/>
-    <br/>
-    <input class="ng-pristine ng-untouched ng-valid" min="2" name="org" ng-model="org" placeholder="Your Organisation" type="text"/>
-    <br/>
-    <input class="ng-pristine ng-untouched ng-valid-email ng-invalid ng-invalid-required" min="2" name="email" ng-model="email" placeholder="Your Email*" required="" type="email"/>
-    <br/>
-    <input class="ng-pristine ng-untouched ng-valid" max="12" min="10" name="phone" ng-model="phone" placeholder="Your Telephone" type="text"/>
-    <br/>
-    <textarea class="ng-pristine ng-untouched ng-invalid ng-invalid-required" name="query" ng-model="query" placeholder="How can we help you?" required=""></textarea>
-    <br/>
-    <input class="button ng-pristine ng-untouched ng-valid" disabled="disabled" id="submitbutton" ng-disabled="userForm.$invalid" ng-model="submitButts" tabindex="-1" type="submit" value="Submit Details"/>
-    <!--onsubmit="ga('send', 'event', 'Contact','Submitted','AllForm','100');"-->
-   </form>
-   <div class="divider">
-   </div>
-   <p class="smallCopyright">
-    IHJ Collection Ltd is a company incorporated in Scotland (Registered No: SC101236) whose registered office address is 25 Morton Street, Edinburgh, EH15 2HN © 2025 IHJ Collection Ltd. All rights reserved.
-    <a href="#/privacy" ng-class="{active:isActive('/privacy')}" ng-click="gotoTop()">
-     Privacy Policy.
-    </a>
-   </p>
-  </footer>
-  <style type="text/css">
-   #COVID {
-            animation: 1s ease-in covidbanner both;
-            padding: 0.75rem 0.25rem;
-            line-height: 1.2;
-            animation-delay: 2s;
-            text-align: center;
-        }
-        /*@media screen and (max-width: 600px) {
-            #COVID {padding: 1rem 4rem 1rem 1rem; font-size: 0.85em;}
-        }
-        @media screen and (min-width: 600px) {
-            #COVID {text-align: center; padding: 0.5rem;}
-        } */
-        
-        @keyframes covidbanner {
-            from {transform: translateY(2rem); opacity: 0;}
-            to {transform: translateY(0); opacity: 1;}
-        }
-  </style>
-  <!--<div id="COVID" style="position: fixed;left: 0;z-index: 898;background-color: dodgerblue;color: white;width: 100%;bottom: 0;">We're available to help with debt recovery during the COVID-19 pandemic. Call 0131 555 0785 for expert advice in navigating this crisis.</div>-->
-  <script src="js/angular.js">
-  </script>
-  <script src="js/angular-route.js">
-  </script>
-  <script src="js/angular-animate.js">
-  </script>
-  <script src="js/app.js">
-  </script>
-  <script src="js/ofi.min.js" type="text/javascript">
-  </script>
-  <script>
-   objectFitImages();
-  </script>
- </body>
+      <span class="lbl" title="${c.client}">${c.client}</span>
+      <span class="track"><span class="fill" style="width:${Math.max(6,c.n/max*100)}%"></span></span>
+      <span class="num">${c.n}</span>
+    </div>`).join('');
+}
+
+// chart geometry + current data, shared with the hover handler
+const TL = {W:720,H:270,mL:44,mR:14,mT:12,mB:26};
+TL.xL = TL.mL; TL.xR = TL.W - TL.mR; TL.plotW = TL.xR - TL.xL;
+TL.yT = TL.mT; TL.yB = TL.H - TL.mB; TL.plotH = TL.yB - TL.yT;
+let _tlData = [];
+let _tlScales = null;
+let _chartHoverBound = false;
+
+function tlX(i, n){ return n<=1 ? TL.xL : TL.xL + (i/(n-1))*TL.plotW; }
+function tlY(v, max){ return TL.yB - (v/Math.max(1,max))*TL.plotH; }
+
+// smooth path through points via quadratic midpoints
+function smoothPath(pts){
+  if(!pts.length) return '';
+  if(pts.length<3) return 'M' + pts.map(p=>`${p.x.toFixed(1)},${p.y.toFixed(1)}`).join(' L');
+  let p = `M${pts[0].x.toFixed(1)},${pts[0].y.toFixed(1)} `;
+  for(let i=1;i<pts.length;i++){
+    const xc=(pts[i].x+pts[i-1].x)/2, yc=(pts[i].y+pts[i-1].y)/2;
+    p += `Q${pts[i-1].x.toFixed(1)},${pts[i-1].y.toFixed(1)} ${xc.toFixed(1)},${yc.toFixed(1)} `;
+  }
+  const last = pts[pts.length-1];
+  p += `L${last.x.toFixed(1)},${last.y.toFixed(1)}`;
+  return p;
+}
+
+function hhmm(bucket){
+  // bucket is "YYYY-MM-DDTHH:MM" in UTC; show local clock time
+  const d = new Date(bucket + 'Z');
+  if(isNaN(d)) return '';
+  return d.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+
+async function loadTimeline(){
+  const data = await jget('/api/timeline');
+  const svg = $('#chart');
+  _tlData = data;
+  if(!data.length){
+    svg.innerHTML=`<text x="360" y="135" fill="#5d7470" text-anchor="middle" font-size="13" font-style="italic">no data yet</text>`;
+    return;
+  }
+  const n = data.length;
+  // each series scaled to its OWN max so all three are readable (trends, not magnitude)
+  const maxQ = Math.max(1, ...data.map(d=>d.queries||0));
+  const maxB = Math.max(1, ...data.map(d=>d.blocked||0));
+  const maxF = Math.max(1, ...data.map(d=>d.flagged||0));
+  _tlScales = {maxQ, maxB, maxF};
+
+  const ptsFor = (key,max)=> data.map((d,i)=>({x:tlX(i,n), y:tlY(d[key]||0,max)}));
+  const qPts = ptsFor('queries',maxQ), bPts = ptsFor('blocked',maxB), fPts = ptsFor('flagged',maxF);
+
+  // horizontal gridlines spanning the plot area
+  let g='';
+  for(let i=0;i<=4;i++){
+    const yy = TL.yT + TL.plotH*i/4;
+    g += `<line x1="${TL.xL}" y1="${yy.toFixed(1)}" x2="${TL.xR}" y2="${yy.toFixed(1)}" stroke="#16211f" stroke-width="1"/>`;
+  }
+  // baseline + left axis
+  g += `<line x1="${TL.xL}" y1="${TL.yT}" x2="${TL.xL}" y2="${TL.yB}" stroke="#1d2a2e" stroke-width="1"/>`;
+
+  // x-axis time labels at 0/25/50/75/100%
+  let xlabels='';
+  const idxs=[0, Math.floor((n-1)*0.25), Math.floor((n-1)*0.5), Math.floor((n-1)*0.75), n-1];
+  [...new Set(idxs)].forEach(i=>{
+    const x=tlX(i,n);
+    const anchor = i===0 ? 'start' : (i===n-1 ? 'end' : 'middle');
+    xlabels += `<text class="ax-label" x="${x.toFixed(1)}" y="${TL.H-9}" text-anchor="${anchor}">${hhmm(data[i].bucket)}</text>`;
+  });
+
+  // faint area under queries for a little body
+  let area = `M${qPts[0].x.toFixed(1)},${TL.yB} `;
+  qPts.forEach(p=>{ area += `L${p.x.toFixed(1)},${p.y.toFixed(1)} `; });
+  area += `L${qPts[qPts.length-1].x.toFixed(1)},${TL.yB} Z`;
+
+  const path = (pts,color,wd)=>`<path d="${smoothPath(pts)}" fill="none" stroke="${color}" stroke-width="${wd}" stroke-linejoin="round" stroke-linecap="round"/>`;
+
+  // hover overlay elements (updated by the move handler)
+  const hover =
+    `<line id="tl-hline" x1="0" y1="${TL.yT}" x2="0" y2="${TL.yB}" stroke="#46d6e0" stroke-width="1" stroke-dasharray="3 3" style="display:none"/>`+
+    `<circle id="tl-dot-q" r="3" fill="#d8e6e3" style="display:none"/>`+
+    `<circle id="tl-dot-b" r="3" fill="#46d6e0" style="display:none"/>`+
+    `<circle id="tl-dot-f" r="3" fill="#ffb347" style="display:none"/>`+
+    `<rect id="tl-hit" x="${TL.xL}" y="${TL.yT}" width="${TL.plotW}" height="${TL.plotH}" fill="transparent"/>`;
+
+  svg.innerHTML = g
+    + `<path d="${area}" fill="rgba(216,230,227,.05)"/>`
+    + path(fPts,'#ffb347',1.6)
+    + path(bPts,'#46d6e0',1.6)
+    + path(qPts,'#d8e6e3',1.6)
+    + xlabels
+    + hover;
+
+  bindChartHover();
+}
+
+function bindChartHover(){
+  if(_chartHoverBound) return;
+  _chartHoverBound = true;
+  const svg = $('#chart');
+  const tip = $('#chart-tip');
+  const wrap = svg.parentElement;
+
+  svg.addEventListener('mousemove', (ev)=>{
+    if(!_tlData.length || !_tlScales) return;
+    const rect = svg.getBoundingClientRect();
+    const vbx = (ev.clientX - rect.left) / rect.width * TL.W;
+    if(vbx < TL.xL-2 || vbx > TL.xR+2){ hideHover(); return; }
+    const n = _tlData.length;
+    let idx = n<=1 ? 0 : Math.round((vbx - TL.xL)/TL.plotW*(n-1));
+    idx = Math.max(0, Math.min(n-1, idx));
+    const d = _tlData[idx];
+    const x = tlX(idx, n);
+    const yq = tlY(d.queries||0,_tlScales.maxQ), yb = tlY(d.blocked||0,_tlScales.maxB), yf = tlY(d.flagged||0,_tlScales.maxF);
+
+    const set=(id,attrs)=>{const el=svg.querySelector(id);if(!el)return;for(const k in attrs)el.setAttribute(k,attrs[k]);el.style.display='';};
+    set('#tl-hline',{x1:x,x2:x});
+    set('#tl-dot-q',{cx:x,cy:yq});
+    set('#tl-dot-b',{cx:x,cy:yb});
+    set('#tl-dot-f',{cx:x,cy:yf});
+
+    tip.innerHTML =
+      `<div class="tt-time">${hhmm(d.bucket)}</div>`+
+      `<div class="tt-row"><i style="background:#d8e6e3"></i>queries<b>${(d.queries||0).toLocaleString()}</b></div>`+
+      `<div class="tt-row"><i style="background:#46d6e0"></i>blocked<b>${(d.blocked||0).toLocaleString()}</b></div>`+
+      `<div class="tt-row"><i style="background:#ffb347"></i>flagged<b>${(d.flagged||0).toLocaleString()}</b></div>`;
+    tip.style.display='block';
+    // position the tooltip in pixel space, flipping side near the right edge
+    const px = (x/TL.W)*rect.width;
+    const tw = tip.offsetWidth;
+    let left = px + 14;
+    if(left + tw > rect.width) left = px - tw - 14;
+    tip.style.left = Math.max(0,left) + 'px';
+    tip.style.top = '6px';
+  });
+  svg.addEventListener('mouseleave', hideHover);
+
+  function hideHover(){
+    tip.style.display='none';
+    ['#tl-hline','#tl-dot-q','#tl-dot-b','#tl-dot-f'].forEach(id=>{
+      const el=svg.querySelector(id); if(el) el.style.display='none';
+    });
+  }
+}
+
+let _events = [];
+let _page = 0;
+const PAGE_SIZE = 20;
+
+async function loadEvents(){
+  _events = await jget('/api/events?limit=500');
+  renderEvents();
+}
+
+function renderEvents(){
+  const tb = $('#events');
+  if(!_events.length){
+    tb.innerHTML='<tr><td colspan="6" class="empty">nothing suspicious yet, which is good</td></tr>';
+    $('#pager').innerHTML=''; return;
+  }
+  const pages = Math.ceil(_events.length / PAGE_SIZE);
+  if(_page >= pages) _page = pages-1;
+  if(_page < 0) _page = 0;
+  const slice = _events.slice(_page*PAGE_SIZE, _page*PAGE_SIZE+PAGE_SIZE);
+
+  tb.innerHTML = slice.map(e=>{
+    const real = e.domain && !e.domain.startsWith('(');
+    const trusted = real && isTrusted(e.domain);
+    const blocked = real && isBlocked(e.domain);
+    let actions = '';
+    if(real){
+      actions = '<span class="btnrow">'+
+        `<button class="blockbtn${blocked?' active':''}" data-d="${e.domain}" data-state="${blocked?'blocked':'unblocked'}">${blocked?'unblock':'block'}</button>`+
+        `<button class="okbtn${trusted?' active':''}" data-d="${e.domain}" data-state="${trusted?'trusted':'untrusted'}">${trusted?'untrust':'trust'}</button>`+
+        '</span>';
+    }
+    return `<tr${trusted?' class="trustedrow"':''}>
+      <td class="ago">${ago(e.ts)} ago</td>
+      <td><span class="tag ${e.rule}">${e.rule.replace('_',' ')}</span></td>
+      <td class="dom">${e.domain}</td>
+      <td class="cli">${e.client}</td>
+      <td class="det">${e.detail||''}</td>
+      <td class="actions">${actions}</td>
+    </tr>`;
+  }).join('');
+
+  // pager controls
+  $('#pager').innerHTML =
+    `<button class="pgbtn" id="prev" ${_page===0?'disabled':''}>‹ prev</button>`+
+    `<span class="pginfo">page ${_page+1} / ${pages} · ${_events.length} events</span>`+
+    `<button class="pgbtn" id="next" ${_page>=pages-1?'disabled':''}>next ›</button>`;
+  const prev=$('#prev'), next=$('#next');
+  if(prev) prev.onclick=()=>{ _page--; renderEvents(); };
+  if(next) next.onclick=()=>{ _page++; renderEvents(); };
+
+  tb.querySelectorAll('.blockbtn').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const isB = btn.dataset.state === 'blocked';
+      const url = isB ? '/api/unblock' : '/api/block';
+      btn.disabled=true; btn.textContent='…';
+      try{
+        const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:btn.dataset.d})});
+        const j = await r.json();
+        if(j.ok){ await loadBlocked(); renderEvents(); }
+        else { btn.textContent='fail'; btn.disabled=false; }
+      }catch(e){ btn.textContent='fail'; btn.disabled=false; }
+    };
+  });
+  tb.querySelectorAll('.okbtn').forEach(btn=>{
+    btn.onclick = async ()=>{
+      const isT = btn.dataset.state === 'trusted';
+      const url = isT ? '/api/unwhitelist' : '/api/whitelist';
+      btn.disabled=true; btn.textContent='…';
+      try{
+        const r = await fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({domain:btn.dataset.d})});
+        const j = await r.json();
+        if(j.ok){ await loadWhitelist(); renderEvents(); }
+        else { btn.textContent='fail'; btn.disabled=false; }
+      }catch(e){ btn.textContent='fail'; btn.disabled=false; }
+    };
+  });
+}
+
+let _whitelist = new Set();
+
+async function loadWhitelist(){
+  try{
+    const w = await jget('/api/whitelist');
+    const box = $('#wl');
+    _whitelist = new Set([...w.env, ...w.user.map(d=>d.domain)]);
+    if(box){
+      const all = [...w.env.map(d=>({domain:d,env:true})), ...w.user.map(d=>({domain:d.domain,env:false}))];
+      if(!all.length){ box.innerHTML='<span class="empty" style="padding:0">none yet</span>'; }
+      else{
+        box.innerHTML = all.map(d=>
+          `<span class="chip">${d.domain}${d.env?'<i> (config)</i>':
+            `<b data-d="${d.domain}" title="remove">×</b>`}</span>`).join('');
+        box.querySelectorAll('b[data-d]').forEach(x=>{
+          x.onclick = async ()=>{
+            await fetch('/api/unwhitelist',{method:'POST',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({domain:x.dataset.d})});
+            await loadWhitelist(); renderEvents();
+          };
+        });
+      }
+    }
+  }catch(e){}
+}
+
+function isTrusted(domain){
+  if(_whitelist.has(domain)) return true;
+  for(const w of _whitelist){ if(domain.endsWith('.'+w)) return true; }
+  return false;
+}
+
+let _blocked = new Set();
+
+async function loadBlocked(){
+  try{
+    const b = await jget('/api/blocked');
+    _blocked = new Set(b.blocked||[]);
+  }catch(e){}
+}
+
+function isBlocked(domain){
+  return _blocked.has(domain);
+}
+
+// Manual Whitelist Form Hook
+$('#wl-add-btn').onclick = async () => {
+  const input = $('#wl-input');
+  const dom = input.value.trim().toLowerCase();
+  if(!dom) return;
+  $('#wl-add-btn').disabled = true;
+  try {
+    const r = await fetch('/api/whitelist', {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({ domain: dom })
+    });
+    const j = await r.json();
+    if(j.ok) {
+      input.value = '';
+      await loadWhitelist();
+      if(_page === 0) await loadEvents();
+      else renderEvents();
+    }
+  } catch(e){}
+  $('#wl-add-btn').disabled = false;
+};
+
+// Clear All Events Hook
+$('#clear-events-btn').onclick = async () => {
+  if(!confirm('Are you sure you want to completely clear the suspicious events logs?')) return;
+  $('#clear-events-btn').disabled = true;
+  try {
+    const r = await fetch('/api/clear_events', { method: 'POST' });
+    const j = await r.json();
+    if(j.ok) {
+      _events = [];
+      renderEvents();
+      await loadSummary();
+    }
+  } catch(e){}
+  $('#clear-events-btn').disabled = false;
+};
+
+// Restart Container Hook
+$('#restart-btn').onclick = async () => {
+  if(!confirm('Restart the DNSWatch Docker container?')) return;
+  $('#restart-btn').disabled = true;
+  $('#restart-btn').textContent = 'Restarting...';
+  try {
+    await fetch('/api/restart', { method: 'POST' });
+    // Wait 3 seconds for Docker to reboot the container, then refresh the page
+    setTimeout(() => location.reload(), 3000);
+  } catch(e){}
+};
+
+function tick(){
+  loadStatus(); loadSummary(); loadTimeline(); loadWhitelist(); loadBlocked();
+  if(_page === 0) loadEvents();
+}
+Promise.all([loadWhitelist(), loadBlocked()]).then(loadEvents);
+tick();
+setInterval(tick, 15000);
+</script>
+</body>
 </html>
